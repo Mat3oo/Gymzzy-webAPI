@@ -1,6 +1,6 @@
 ﻿using System;
-using System.Collections;
 using System.Collections.Generic;
+using System.ComponentModel.DataAnnotations;
 
 namespace GymzzyWebAPI.Models
 {
@@ -12,11 +12,13 @@ namespace GymzzyWebAPI.Models
         }
 
         public Guid Id { get; set; }
+        [Required]
         public DateTime Date { get; set; }
 
-        public Guid User_Id { get; set; }
+        [Required]
+        public Guid UserId { get; set; }
         public User User { get; set; }
 
-        public ICollection<Series> Series{ get; set; }
+        public ICollection<Series> Series { get; set; }
     }
 }
