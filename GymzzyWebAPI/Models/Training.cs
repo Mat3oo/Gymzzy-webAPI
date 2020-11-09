@@ -17,7 +17,6 @@ namespace GymzzyWebAPI.Models
 
         [Required]
         public Guid UserId { get; set; }
-        public User User { get; set; }
 
         public ICollection<Series> Series { get; set; }
     }

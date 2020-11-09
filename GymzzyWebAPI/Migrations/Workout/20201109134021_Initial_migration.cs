@@ -1,9 +1,9 @@
 ﻿using System;
 using Microsoft.EntityFrameworkCore.Migrations;
 
-namespace GymzzyWebAPI.Migrations
+namespace GymzzyWebAPI.Migrations.Workout
 {
-    public partial class Initial_Migration : Migration
+    public partial class Initial_migration : Migration
     {
         protected override void Up(MigrationBuilder migrationBuilder)
         {
@@ -21,27 +21,6 @@ namespace GymzzyWebAPI.Migrations
                 });
 
             migrationBuilder.CreateTable(
-                name: "User",
-                columns: table => new
-                {
-                    Id = table.Column<Guid>(nullable: false),
-                    Name = table.Column<string>(maxLength: 256, nullable: true),
-                    LastName = table.Column<string>(maxLength: 256, nullable: true),
-                    Nick = table.Column<string>(maxLength: 256, nullable: false),
-                    Email = table.Column<string>(nullable: false),
-                    Gender = table.Column<string>(nullable: true),
-                    Height = table.Column<float>(nullable: true),
-                    Weight = table.Column<float>(nullable: true),
-                    Birthday = table.Column<DateTime>(nullable: true),
-                    Password = table.Column<string>(nullable: false),
-                    PasswordSalt = table.Column<string>(nullable: false)
-                },
-                constraints: table =>
-                {
-                    table.PrimaryKey("PK_User", x => x.Id);
-                });
-
-            migrationBuilder.CreateTable(
                 name: "Training",
                 columns: table => new
                 {
@@ -52,12 +31,6 @@ namespace GymzzyWebAPI.Migrations
                 constraints: table =>
                 {
                     table.PrimaryKey("PK_Training", x => x.Id);
-                    table.ForeignKey(
-                        name: "FK_Training_User_UserId",
-                        column: x => x.UserId,
-                        principalTable: "User",
-                        principalColumn: "Id",
-                        onDelete: ReferentialAction.Cascade);
                 });
 
             migrationBuilder.CreateTable(
@@ -100,7 +73,8 @@ namespace GymzzyWebAPI.Migrations
             migrationBuilder.CreateIndex(
                 name: "IX_Training_UserId",
                 table: "Training",
-                column: "UserId");
+                column: "UserId",
+                unique: true);
         }
 
         protected override void Down(MigrationBuilder migrationBuilder)
@@ -113,9 +87,6 @@ namespace GymzzyWebAPI.Migrations
 
             migrationBuilder.DropTable(
                 name: "Training");
-
-            migrationBuilder.DropTable(
-                name: "User");
         }
     }
 }

@@ -9,6 +9,16 @@ namespace GymzzyWebAPI.DAL
             : base(options)
         { }
 
-        public DbSet<User> User { get; set; }
+        public DbSet<Training> Training { get; set; }
+
+        protected override void OnModelCreating(ModelBuilder builder)
+        {
+            base.OnModelCreating(builder);
+
+            builder.Entity<Training>(entity =>
+            {
+                entity.HasIndex(p => p.UserId).IsUnique();
+            });
+        }
     }
 }
