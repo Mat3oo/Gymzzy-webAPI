@@ -1,4 +1,6 @@
 using GymzzyWebAPI.DAL;
+using GymzzyWebAPI.DAL.Repositories;
+using GymzzyWebAPI.DAL.Repositories.Interfaces;
 using GymzzyWebAPI.Models;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
@@ -45,6 +47,8 @@ namespace GymzzyWebAPI
                     options.Password.RequireLowercase = false;
                 });
             }
+
+            services.AddTransient<IUnitOfWork, UnitOfWork>();
 
             services.AddControllers();
         }
