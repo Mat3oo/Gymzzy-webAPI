@@ -1,6 +1,6 @@
-﻿using GymzzyWebAPI.Services.Interfaces;
+﻿using GymzzyWebAPI.Models.DTO;
+using GymzzyWebAPI.Services.Interfaces;
 using Microsoft.AspNetCore.Mvc;
-using Models.DTO;
 using System;
 using System.Threading.Tasks;
 
@@ -21,6 +21,24 @@ namespace GymzzyWebAPI.Controllers
         public async Task<UserDetailsViewDTO> GetUser([FromBody] Guid id)
         {
             return await _userService.GetUserDetailsAsync(id);
+        }
+
+        [HttpPost]
+        [Route("regist")]
+        public async Task<IActionResult> Regist(UserRegistDTO userDTO)
+        {
+            UserDetailsViewDTO created;
+
+            try
+            {
+                created = await _userService.RegisterUserAsync(userDTO);
+            }
+            catch (ArgumentException e)
+            {
+                return BadRequest(e.Data["Errors"]);
+            }
+
+            return Created($"api/user", created);
         }
     }
 }

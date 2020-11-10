@@ -14,15 +14,5 @@ namespace GymzzyWebAPI.DAL
         public UserContext(DbContextOptions<UserContext> options)
             : base(options)
         { }
-
-        protected override void OnModelCreating(ModelBuilder builder)
-        {
-            base.OnModelCreating(builder);
-
-            builder.Entity<User>(entity =>
-            {
-                entity.HasIndex(p => p.Nick).IsUnique();
-            });
-        }
     }
 }

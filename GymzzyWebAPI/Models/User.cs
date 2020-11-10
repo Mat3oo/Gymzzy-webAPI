@@ -6,14 +6,11 @@ namespace GymzzyWebAPI.Models
 {
     public class User : IdentityUser<Guid>
     {
-        [StringLength(256, ErrorMessage = "Max name length is {1} characters")]
+        [StringLength(256, ErrorMessage = "Max {0} length is {1} characters")]
         public string Name { get; set; }
-        [StringLength(256, ErrorMessage = "Max last name is {1} characters")]
+        [StringLength(256, ErrorMessage = "Max {0} is {1} characters")]
         public string LastName { get; set; }
-        [Required]
-        [StringLength(256, ErrorMessage = "Max nick lenth is {1} characters")]
-        public string Nick { get; set; }
-        [MinLength(1, ErrorMessage = "Gender should be expressed with one character")]
+        [MinLength(1, ErrorMessage = "{0} should be expressed with {1} character")]
         public char? Gender { get; set; }
         public float? Height { get; set; }
         public float? Weight { get; set; }

@@ -1,5 +1,5 @@
 ﻿using AutoMapper;
-using Models.DTO;
+using GymzzyWebAPI.Models.DTO;
 
 namespace GymzzyWebAPI.Models.Profiles
 {
@@ -8,6 +8,7 @@ namespace GymzzyWebAPI.Models.Profiles
         public UserProfile()
         {
             CreateMap<User, UserDetailsViewDTO>();
+            CreateMap<UserRegistDTO, User>();
         }
     }
 }
