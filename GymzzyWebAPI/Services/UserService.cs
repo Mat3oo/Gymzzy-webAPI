@@ -1,4 +1,5 @@
-﻿using GymzzyWebAPI.DAL.Repositories.Interfaces;
+﻿using AutoMapper;
+using GymzzyWebAPI.DAL.Repositories.Interfaces;
 using GymzzyWebAPI.Services.Interfaces;
 using Models.DTO;
 using System;
@@ -9,10 +10,12 @@ namespace GymzzyWebAPI.Services
     public class UserService : IUserService
     {
         private readonly IUnitOfWork _unitOfWork;
+        private readonly IMapper _mapper;
 
-        public UserService(IUnitOfWork unitOfWork)
+        public UserService(IUnitOfWork unitOfWork, IMapper mapper)
         {
             _unitOfWork = unitOfWork;
+            _mapper = mapper;
         }
 
         public async Task<UserDetailsViewDTO> GetUserDetailsAsync(Guid id)
@@ -23,18 +26,7 @@ namespace GymzzyWebAPI.Services
 
             if (temp != null)
             {
-                userDTO = new UserDetailsViewDTO
-                {
-                    Id = temp.Id,
-                    Name = temp.Name,
-                    LastName = temp.LastName,
-                    Nick = temp.Nick,
-                    Email = temp.Email,
-                    Gender = temp.Gender,
-                    Height = temp.Height,
-                    Weight = temp.Weight,
-                    Birthday = temp.Birthday
-                };
+                userDTO = _mapper.Map<UserDetailsViewDTO>(temp);
             }
 
             return userDTO;
