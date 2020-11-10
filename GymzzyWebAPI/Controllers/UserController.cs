@@ -1,6 +1,6 @@
-﻿using GymzzyWebAPI.Models;
-using GymzzyWebAPI.Services.Interfaces;
+﻿using GymzzyWebAPI.Services.Interfaces;
 using Microsoft.AspNetCore.Mvc;
+using Models.DTO;
 using System;
 using System.Threading.Tasks;
 
@@ -18,7 +18,7 @@ namespace GymzzyWebAPI.Controllers
         }
 
         [HttpGet]
-        public async Task<User> GetUser([FromBody] Guid id)
+        public async Task<UserDetailsViewDTO> GetUser([FromBody] Guid id)
         {
             return await _userService.GetUserDetailsAsync(id);
         }

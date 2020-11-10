@@ -1,4 +1,4 @@
-﻿using GymzzyWebAPI.Models;
+﻿using Models.DTO;
 using System;
 using System.Threading.Tasks;
 
@@ -6,6 +6,6 @@ namespace GymzzyWebAPI.Services.Interfaces
 {
     public interface IUserService
     {
-        Task<User> GetUserDetailsAsync(Guid id);
+        Task<UserDetailsViewDTO> GetUserDetailsAsync(Guid id);
     }
 }
