@@ -40,5 +40,18 @@ namespace GymzzyWebAPI.Controllers
 
             return Created($"api/user", created);
         }
+
+        [HttpPost]
+        [Route("login")]
+        public async Task<IActionResult> LoginJwtToken(UserLoginDTO userDTO)
+        {
+            var tokenString = await _userService.LoginUserAsync(userDTO);
+            if (tokenString is null)
+            {
+                return Unauthorized(new { message = "Invalid email or password" });
+            }
+
+            return Ok(new { token = tokenString });
+        }
     }
 }
