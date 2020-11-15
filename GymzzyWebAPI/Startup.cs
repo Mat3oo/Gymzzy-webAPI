@@ -5,6 +5,7 @@ using GymzzyWebAPI.DAL.Repositories.Interfaces;
 using GymzzyWebAPI.Models;
 using GymzzyWebAPI.Services;
 using GymzzyWebAPI.Services.Interfaces;
+using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Identity;
@@ -12,7 +13,9 @@ using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
+using Microsoft.IdentityModel.Tokens;
 using System;
+using System.Text;
 
 namespace GymzzyWebAPI
 {
@@ -51,6 +54,27 @@ namespace GymzzyWebAPI
                 });
             }
 
+            services.AddAuthentication(options =>
+            {
+                options.DefaultScheme = JwtBearerDefaults.AuthenticationScheme;
+                options.DefaultAuthenticateScheme = JwtBearerDefaults.AuthenticationScheme;
+                options.DefaultChallengeScheme = JwtBearerDefaults.AuthenticationScheme;
+                options.DefaultForbidScheme = JwtBearerDefaults.AuthenticationScheme;
+            })
+                .AddJwtBearer(options =>
+                {
+                    var tokenSection = Configuration.GetSection("JwtTokenOptions");
+
+                    options.TokenValidationParameters = new TokenValidationParameters
+                    {
+                        ClockSkew = TimeSpan.FromSeconds(tokenSection.GetValue("ClockSkewSeconds", 60d)),
+                        IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(
+                            tokenSection.GetValue<string>("IssuerSigningKey")))
+                    };
+
+                    tokenSection.Bind(options.TokenValidationParameters);
+                });
+
             services.AddTransient<IUnitOfWork, UnitOfWork>();
             services.AddTransient<IUserService, UserService>();
 
@@ -70,6 +94,8 @@ namespace GymzzyWebAPI
             app.UseHttpsRedirection();
 
             app.UseRouting();
+
+            app.UseAuthentication();
 
             app.UseAuthorization();
 
