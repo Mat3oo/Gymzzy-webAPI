@@ -14,12 +14,20 @@ namespace GymzzyWebAPI.Services
         private readonly IUnitOfWork _unitOfWork;
         private readonly IMapper _mapper;
         private readonly UserManager<User> _userManager;
+        private readonly SignInManager<User> _signInManager;
+        private readonly ITokenGeneratorService _tokenGeneratorService;
 
-        public UserService(IUnitOfWork unitOfWork, IMapper mapper, UserManager<User> userManager)
+        public UserService(IUnitOfWork unitOfWork,
+                           IMapper mapper,
+                           UserManager<User> userManager,
+                           SignInManager<User> signInManager,
+                           ITokenGeneratorService tokenGeneratorService)
         {
             _unitOfWork = unitOfWork;
             _mapper = mapper;
             _userManager = userManager;
+            _signInManager = signInManager;
+            _tokenGeneratorService = tokenGeneratorService;
         }
 
         public async Task<UserDetailsViewDTO> GetUserDetailsAsync(Guid id)
@@ -34,6 +42,25 @@ namespace GymzzyWebAPI.Services
             }
 
             return userDTO;
+        }
+
+        public async Task<string> LoginUserAsync(UserLoginDTO userLogin)
+        {
+            var user = await _userManager.FindByEmailAsync(userLogin.Email);
+
+            if (user is null)
+            {
+                return null;
+            }
+
+            var passCheck = await _signInManager.CheckPasswordSignInAsync(user, userLogin.Password, false);
+
+            if(!passCheck.Succeeded)
+            {
+                return null;
+            }
+
+            return _tokenGeneratorService.GenerateToken(user);
         }
 
         public async Task<UserDetailsViewDTO> RegisterUserAsync(UserRegistDTO userRegist)

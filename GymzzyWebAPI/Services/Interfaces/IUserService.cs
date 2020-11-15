@@ -8,5 +8,6 @@ namespace GymzzyWebAPI.Services.Interfaces
     {
         Task<UserDetailsViewDTO> GetUserDetailsAsync(Guid id);
         Task<UserDetailsViewDTO> RegisterUserAsync(UserRegistDTO userRegist);
+        Task<string> LoginUserAsync(UserLoginDTO userLogin);
     }
 }
