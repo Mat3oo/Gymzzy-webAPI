@@ -6,6 +6,7 @@ using GymzzyWebAPI.Models;
 using GymzzyWebAPI.Services;
 using GymzzyWebAPI.Services.Interfaces;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Identity;
@@ -74,6 +75,13 @@ namespace GymzzyWebAPI
 
                     tokenSection.Bind(options.TokenValidationParameters);
                 });
+
+            services.AddAuthorization(options =>
+            {
+                options.FallbackPolicy = new AuthorizationPolicyBuilder()
+                    .RequireAuthenticatedUser()
+                    .Build();
+            });
 
             services.AddTransient<IUnitOfWork, UnitOfWork>();
             services.AddTransient<IUserService, UserService>();

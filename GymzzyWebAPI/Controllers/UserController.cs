@@ -1,5 +1,6 @@
 ﻿using GymzzyWebAPI.Models.DTO;
 using GymzzyWebAPI.Services.Interfaces;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using System;
 using System.Threading.Tasks;
@@ -24,6 +25,7 @@ namespace GymzzyWebAPI.Controllers
         }
 
         [HttpPost]
+        [AllowAnonymous]
         [Route("regist")]
         public async Task<IActionResult> Regist(UserRegistDTO userDTO)
         {
@@ -42,6 +44,7 @@ namespace GymzzyWebAPI.Controllers
         }
 
         [HttpPost]
+        [AllowAnonymous]
         [Route("login")]
         public async Task<IActionResult> LoginJwtToken(UserLoginDTO userDTO)
         {
