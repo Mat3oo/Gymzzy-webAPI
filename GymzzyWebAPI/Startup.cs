@@ -16,6 +16,7 @@ using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using Microsoft.IdentityModel.Tokens;
 using System;
+using System.Security.Claims;
 using System.Text;
 
 namespace GymzzyWebAPI
@@ -80,6 +81,7 @@ namespace GymzzyWebAPI
             {
                 options.FallbackPolicy = new AuthorizationPolicyBuilder()
                     .RequireAuthenticatedUser()
+                    .RequireClaim(ClaimTypes.NameIdentifier)
                     .Build();
             });
 

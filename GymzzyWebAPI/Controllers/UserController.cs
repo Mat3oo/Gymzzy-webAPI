@@ -3,6 +3,7 @@ using GymzzyWebAPI.Services.Interfaces;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using System;
+using System.Security.Claims;
 using System.Threading.Tasks;
 
 namespace GymzzyWebAPI.Controllers
@@ -19,9 +20,23 @@ namespace GymzzyWebAPI.Controllers
         }
 
         [HttpGet]
-        public async Task<UserDetailsViewDTO> GetUser([FromBody] Guid id)
+        public async Task<IActionResult> GetUser()
         {
-            return await _userService.GetUserDetailsAsync(id);
+            var parseResult = Guid.TryParse(User.FindFirstValue(ClaimTypes.NameIdentifier), out Guid id);
+
+            if (!parseResult)
+            {
+                return BadRequest($"Invalid id format. Given id: \"{id}\"");
+            }
+
+            var userDetails = await _userService.GetUserDetailsAsync(id);
+
+            if (userDetails == null)
+            {
+                return BadRequest($"User with id: \"{id}\" doesn't exist.");
+            }
+
+            return Ok(userDetails);
         }
 
         [HttpPost]
