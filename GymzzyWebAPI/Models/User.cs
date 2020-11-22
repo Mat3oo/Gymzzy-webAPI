@@ -10,7 +10,6 @@ namespace GymzzyWebAPI.Models
         public string Name { get; set; }
         [StringLength(256, ErrorMessage = "Max {0} is {1} characters")]
         public string LastName { get; set; }
-        [MinLength(1, ErrorMessage = "{0} should be expressed with {1} character")]
         public char? Gender { get; set; }
         public float? Height { get; set; }
         public float? Weight { get; set; }
