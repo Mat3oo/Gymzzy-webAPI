@@ -9,6 +9,7 @@ namespace GymzzyWebAPI.Models.Profiles
         {
             CreateMap<User, UserDetailsViewDTO>();
             CreateMap<UserRegistDTO, User>();
+            CreateMap<UserDetailsEditDTO, User>();
         }
     }
 }

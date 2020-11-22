@@ -38,6 +38,29 @@ namespace GymzzyWebAPI.Services
             return _mapper.Map<UserDetailsViewDTO>(user);
         }
 
+        public async Task<short> UpdateUserDetailsAsync(Guid id, UserDetailsEditDTO userDetails)
+        {
+            var user = await _userManager.FindByIdAsync(id.ToString());
+
+            if (user is null)
+            {
+                return 1;
+            }
+
+            _mapper.Map(userDetails, user);
+
+            var updateResult = await _userManager.UpdateAsync(user);
+
+            if (!updateResult.Succeeded)
+            {
+                var ex = new ArgumentException();
+                ex.Data["Errors"] = updateResult.Errors;
+                throw ex;
+            }
+
+            return 0;
+        }
+
         public async Task<string> LoginUserAsync(UserLoginDTO userLogin)
         {
             var user = await _userManager.FindByEmailAsync(userLogin.Email);

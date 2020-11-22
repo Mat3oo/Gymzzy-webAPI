@@ -1,6 +1,7 @@
 ﻿using GymzzyWebAPI.Models.DTO;
 using GymzzyWebAPI.Services.Interfaces;
 using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using System;
 using System.Security.Claims;
@@ -37,6 +38,34 @@ namespace GymzzyWebAPI.Controllers
             }
 
             return Ok(userDetails);
+        }
+
+        [HttpPut]
+        public async Task<IActionResult> UpdateUser(UserDetailsEditDTO userDetails)
+        {
+            var parseResult = Guid.TryParse(User.FindFirstValue(ClaimTypes.NameIdentifier), out Guid id);
+
+            if (!parseResult)
+            {
+                return BadRequest($"Invalid user id format. Given id: \"{id}\", try to relogin");
+            }
+
+            short result;
+            try
+            {
+                result = await _userService.UpdateUserDetailsAsync(id, userDetails);
+            }
+            catch (ArgumentException e)
+            {
+                return UnprocessableEntity(e.Data["Errors"]);
+            }
+
+            return result switch
+            {
+                0 => NoContent(),
+                1 => NotFound($"User with id: \"{id}\" doesn't exist."),
+                _ => StatusCode(StatusCodes.Status500InternalServerError, "Sommething goes wrong.")
+            };
         }
 
         [HttpPost]
