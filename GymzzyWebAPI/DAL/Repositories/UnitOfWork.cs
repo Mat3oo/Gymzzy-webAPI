@@ -15,11 +15,6 @@ namespace GymzzyWebAPI.DAL.Repositories
             Users = new UserRepository(_userContext);
         }
 
-        public void Dispose()
-        {
-            _userContext.Dispose();
-        }
-
         public async Task<int> SaveChangesAsync()
         {
             return await _userContext.SaveChangesAsync();
