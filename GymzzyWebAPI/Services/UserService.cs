@@ -1,5 +1,4 @@
 ﻿using AutoMapper;
-using GymzzyWebAPI.DAL.Repositories.Interfaces;
 using GymzzyWebAPI.Models;
 using GymzzyWebAPI.Models.DTO;
 using GymzzyWebAPI.Services.Interfaces;
@@ -11,19 +10,16 @@ namespace GymzzyWebAPI.Services
 {
     public class UserService : IUserService
     {
-        private readonly IUnitOfWork _unitOfWork;
         private readonly IMapper _mapper;
         private readonly UserManager<User> _userManager;
         private readonly SignInManager<User> _signInManager;
         private readonly ITokenGeneratorService _tokenGeneratorService;
 
-        public UserService(IUnitOfWork unitOfWork,
-                           IMapper mapper,
+        public UserService(IMapper mapper,
                            UserManager<User> userManager,
                            SignInManager<User> signInManager,
                            ITokenGeneratorService tokenGeneratorService)
         {
-            _unitOfWork = unitOfWork;
             _mapper = mapper;
             _userManager = userManager;
             _signInManager = signInManager;
@@ -32,16 +28,14 @@ namespace GymzzyWebAPI.Services
 
         public async Task<UserDetailsViewDTO> GetUserDetailsAsync(Guid id)
         {
-            var temp = await _unitOfWork.Users.GetAsync(id);
+            var user = await _userManager.FindByIdAsync(id.ToString());
 
-            UserDetailsViewDTO userDTO = null;
-
-            if (temp != null)
+            if (user is null)
             {
-                userDTO = _mapper.Map<UserDetailsViewDTO>(temp);
+                return null;
             }
 
-            return userDTO;
+            return _mapper.Map<UserDetailsViewDTO>(user);
         }
 
         public async Task<string> LoginUserAsync(UserLoginDTO userLogin)
@@ -55,7 +49,7 @@ namespace GymzzyWebAPI.Services
 
             var passCheck = await _signInManager.CheckPasswordSignInAsync(user, userLogin.Password, false);
 
-            if(!passCheck.Succeeded)
+            if (!passCheck.Succeeded)
             {
                 return null;
             }
