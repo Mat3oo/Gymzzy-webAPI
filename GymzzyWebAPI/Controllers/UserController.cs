@@ -26,14 +26,14 @@ namespace GymzzyWebAPI.Controllers
 
             if (!parseResult)
             {
-                return BadRequest($"Invalid id format. Given id: \"{id}\"");
+                return BadRequest($"Invalid user id format. Given id: \"{id}\", try to relogin");
             }
 
             var userDetails = await _userService.GetUserDetailsAsync(id);
 
             if (userDetails == null)
             {
-                return BadRequest($"User with id: \"{id}\" doesn't exist.");
+                return NotFound($"User with id: \"{id}\" doesn't exist.");
             }
 
             return Ok(userDetails);
@@ -52,7 +52,7 @@ namespace GymzzyWebAPI.Controllers
             }
             catch (ArgumentException e)
             {
-                return BadRequest(e.Data["Errors"]);
+                return UnprocessableEntity(e.Data["Errors"]);
             }
 
             return Created($"api/user", created);
