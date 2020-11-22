@@ -20,9 +20,9 @@ namespace GymzzyWebAPI.DAL.Repositories
             _userContext.Dispose();
         }
 
-        public async Task SaveChangesAsync()
+        public async Task<int> SaveChangesAsync()
         {
-            await _userContext.SaveChangesAsync();
+            return await _userContext.SaveChangesAsync();
         }
     }
 }
