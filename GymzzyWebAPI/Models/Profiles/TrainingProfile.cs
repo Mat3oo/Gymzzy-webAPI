@@ -7,6 +7,8 @@ namespace GymzzyWebAPI.Models.Profiles
     {
         public TrainingProfile()
         {
+            CreateMap<Training, TrainingSimpleViewDTO>();
+
             CreateMap<TrainingCreateDTO, Training>();
             CreateMap<TrainingCreateDTO.SeriesDTO, Series>();
             CreateMap<TrainingCreateDTO.SeriesDTO.ExerciseDTO, Exercise>();

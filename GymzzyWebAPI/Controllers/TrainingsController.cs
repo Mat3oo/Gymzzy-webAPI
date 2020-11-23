@@ -18,6 +18,19 @@ namespace GymzzyWebAPI.Controllers
             _trainingService = trainingService;
         }
 
+        [HttpGet]
+        public async Task<IActionResult> GetTrainings()
+        {
+            var parseResult = Guid.TryParse(User.FindFirstValue(ClaimTypes.NameIdentifier), out Guid id);
+
+            if (!parseResult)
+            {
+                return BadRequest($"Invalid user id format. Given id: \"{id}\", try to relogin");
+            }
+
+            return Ok(await _trainingService.GetUserTrainingsAsync(id));
+        }
+
         [HttpPost]
         public async Task<IActionResult> AddTrainingAsync(TrainingCreateDTO training)
         {

@@ -3,7 +3,10 @@ using GymzzyWebAPI.DAL.Repositories.Interfaces;
 using GymzzyWebAPI.Models;
 using GymzzyWebAPI.Models.DTO;
 using GymzzyWebAPI.Services.Interfaces;
+using Microsoft.EntityFrameworkCore;
 using System;
+using System.Collections.Generic;
+using System.Linq;
 using System.Threading.Tasks;
 
 namespace GymzzyWebAPI.Services
@@ -43,6 +46,15 @@ namespace GymzzyWebAPI.Services
             await _unitOfWork.SaveChangesAsync();
 
             return _mapper.Map<TrainingViewDTO>(training);
+        }
+
+        public async Task<IEnumerable<TrainingSimpleViewDTO>> GetUserTrainingsAsync(Guid userId)
+        {
+            var userTrainings = await _unitOfWork.Trainings.GetAll()
+                .Where(p => p.UserId == userId)
+                .ToListAsync();
+
+            return _mapper.Map<IEnumerable<TrainingSimpleViewDTO>>(userTrainings);
         }
     }
 }
