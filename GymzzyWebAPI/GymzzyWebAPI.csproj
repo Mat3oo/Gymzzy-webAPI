@@ -14,7 +14,6 @@
   </ItemGroup>
 
   <ItemGroup>
-    <Folder Include="Migrations\Workout\" />
     <Folder Include="Migrations\User\" />
   </ItemGroup>
 

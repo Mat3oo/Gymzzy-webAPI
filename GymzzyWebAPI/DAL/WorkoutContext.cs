@@ -15,9 +15,9 @@ namespace GymzzyWebAPI.DAL
         {
             base.OnModelCreating(builder);
 
-            builder.Entity<Training>(entity =>
+            builder.Entity<Exercise>(entity =>
             {
-                entity.HasIndex(p => p.UserId).IsUnique();
+                entity.HasIndex(p => p.Name).IsUnique();
             });
         }
     }
