@@ -6,21 +6,21 @@ namespace GymzzyWebAPI.Models.DTO
     public class UserDetailsViewDTO
     {
         public Guid Id { get; set; }
-        [StringLength(256, ErrorMessage = "Max {0} length is {1} characters")]
+        [StringLength(256)]
         public string Name { get; set; }
-        [StringLength(256, ErrorMessage = "Max {0} is {1} characters")]
+        [StringLength(256)]
         public string LastName { get; set; }
-        [Required(ErrorMessage = "{0} is required")]
-        [StringLength(256, ErrorMessage = "Max {0} length is {1} characters")]
+        [Required]
+        [StringLength(256)]
         public string UserName { get; set; }
-        [EmailAddress(ErrorMessage = "Pass a valid email format")]
+        [EmailAddress]
         public string Email { get; set; }
-        [StringLength(maximumLength: 1, MinimumLength = 1, ErrorMessage = "{0} should be expressed with {1} character")]
+        [StringLength(maximumLength: 1, MinimumLength = 1)]
         [RegularExpression("[fm]")]
         public string Gender { get; set; }
-        [Range(0, 300, ErrorMessage = "{0} should be between {1} - {2}")]
+        [Range(0, 300)]
         public float? Height { get; set; }
-        [Range(0, 1000, ErrorMessage = "{0} should be between {1} - {2}")]
+        [Range(0, 1000)]
         public float? Weight { get; set; }
         public DateTime? Birthday { get; set; }
     }
