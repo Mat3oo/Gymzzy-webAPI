@@ -6,18 +6,26 @@ namespace GymzzyWebAPI.DAL.Repositories
     public class UnitOfWork : IUnitOfWork
     {
         public IUserRepository Users { get; }
+        public ITrainingRepository Trainings { get; }
+        public IExerciseRepository Exercise { get; }
 
         private readonly UserContext _userContext;
+        private readonly WorkoutContext _workoutContext;
 
-        public UnitOfWork(UserContext userContext)
+        public UnitOfWork(UserContext userContext, WorkoutContext workoutContext)
         {
             _userContext = userContext;
+            _workoutContext = workoutContext;
             Users = new UserRepository(_userContext);
+            Trainings = new TrainingRepository(_workoutContext);
+            Exercise = new ExerciseRepository(_workoutContext);
         }
 
         public async Task<int> SaveChangesAsync()
         {
-            return await _userContext.SaveChangesAsync();
+            int changesCount = await _userContext.SaveChangesAsync();
+            changesCount += await _workoutContext.SaveChangesAsync();
+            return changesCount;
         }
     }
 }

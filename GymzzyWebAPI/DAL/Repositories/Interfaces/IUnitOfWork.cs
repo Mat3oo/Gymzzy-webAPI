@@ -4,7 +4,10 @@ namespace GymzzyWebAPI.DAL.Repositories.Interfaces
 {
     public interface IUnitOfWork
     {
-        public IUserRepository Users { get; }
+        IUserRepository Users { get; }
+        ITrainingRepository Trainings { get; }
+        IExerciseRepository Exercise { get; }
+
         Task<int> SaveChangesAsync();
     }
 }

@@ -87,6 +87,7 @@ namespace GymzzyWebAPI
 
             services.AddTransient<IUnitOfWork, UnitOfWork>();
             services.AddTransient<IUserService, UserService>();
+            services.AddTransient<ITrainingService, TrainingService>();
             services.AddSingleton<ITokenGeneratorService, JwtTokenGeneratorService>();
 
             services.AddControllers();
