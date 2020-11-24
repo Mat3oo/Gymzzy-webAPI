@@ -6,9 +6,9 @@ namespace GymzzyWebAPI.Models
 {
     public class User : IdentityUser<Guid>
     {
-        [StringLength(256, ErrorMessage = "Max {0} length is {1} characters")]
+        [StringLength(256)]
         public string Name { get; set; }
-        [StringLength(256, ErrorMessage = "Max {0} is {1} characters")]
+        [StringLength(256)]
         public string LastName { get; set; }
         public char? Gender { get; set; }
         public float? Height { get; set; }

@@ -11,11 +11,9 @@ namespace GymzzyWebAPI.Models
         [Required]
         public float Weight { get; set; }
 
-        [Required]
         public Guid TrainingId { get; set; }
         public Training Training { get; set; }
 
-        [Required]
         public Guid ExerciseId { get; set; }
         public Exercise Exercise { get; set; }
     }

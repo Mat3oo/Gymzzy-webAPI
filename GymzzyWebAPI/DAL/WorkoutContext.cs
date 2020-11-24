@@ -10,6 +10,8 @@ namespace GymzzyWebAPI.DAL
         { }
 
         public DbSet<Training> Training { get; set; }
+        public DbSet<Series> Series { get; set; }
+        public DbSet<Exercise> Exercise { get; set; }
 
         protected override void OnModelCreating(ModelBuilder builder)
         {
