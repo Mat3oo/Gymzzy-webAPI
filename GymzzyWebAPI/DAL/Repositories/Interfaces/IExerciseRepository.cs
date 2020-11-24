@@ -1,9 +1,10 @@
 ﻿using GymzzyWebAPI.Models;
+using System.Threading.Tasks;
 
 namespace GymzzyWebAPI.DAL.Repositories.Interfaces
 {
     public interface IExerciseRepository : IGenericRepository<Exercise>
     {
-        Exercise GetByName(string exerciseName);
+        Task<Exercise> GetByNameAsync(string exerciseName);
     }
 }

@@ -18,6 +18,25 @@ namespace GymzzyWebAPI.Controllers
             _trainingService = trainingService;
         }
 
+        [HttpGet("{trainingId}")]
+        public async Task<IActionResult> GetTraining(Guid trainingId)
+        {
+            var parseResult = Guid.TryParse(User.FindFirstValue(ClaimTypes.NameIdentifier), out Guid id);
+
+            if (!parseResult)
+            {
+                return BadRequest($"Invalid user id format. Given id: \"{id}\", try to relogin");
+            }
+
+            var trainingById = await _trainingService.GetUserTrainingByIdAsync(id, trainingId);
+            if (trainingById is null)
+            {
+                return NotFound($"User with id: \"{id}\" doesn't have training with id: \"{trainingId}\".");
+            }
+
+            return Ok(trainingById);
+        }
+
         [HttpGet]
         public async Task<IActionResult> GetTrainings()
         {
@@ -47,7 +66,7 @@ namespace GymzzyWebAPI.Controllers
                 return NotFound($"User with id: \"{id}\" doesn't exist.");
             }
 
-            return Ok(createdTraining);
+            return CreatedAtAction(nameof(GetTraining), new { trainingId = createdTraining.Id }, createdTraining);
         }
     }
 }

@@ -1,25 +1,35 @@
 ﻿using GymzzyWebAPI.DAL.Repositories.Interfaces;
 using GymzzyWebAPI.Models;
+using Microsoft.EntityFrameworkCore;
 using System;
-using System.Linq;
+using System.Threading.Tasks;
 
 namespace GymzzyWebAPI.DAL.Repositories
 {
     public class ExerciseRepository : GenericRepository<Exercise, WorkoutContext>, IExerciseRepository
     {
+        private readonly WorkoutContext _context;
         public ExerciseRepository(WorkoutContext context) : base(context)
         {
+            _context = context;
         }
 
-        public Exercise GetByName(string exerciseName)
+        public async Task<Exercise> GetByNameAsync(string exerciseName)
         {
-            var exercise = GetAll().FirstOrDefault(p => p.Name == exerciseName);
-            if (exercise is default(Exercise))
+            try
             {
-                return null;
-            }
+                var exercise = await _context.Exercise.SingleOrDefaultAsync(p => p.Name == exerciseName);
+                if (exercise is default(Exercise))
+                {
+                    return null;
+                }
 
-            return exercise;
+                return exercise;
+            }
+            catch (InvalidOperationException)
+            {
+                throw new InvalidOperationException("More than one Exercises with the same name exists in context.");
+            }
         }
     }
 }

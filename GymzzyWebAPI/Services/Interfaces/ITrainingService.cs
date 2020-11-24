@@ -9,5 +9,6 @@ namespace GymzzyWebAPI.Services.Interfaces
     {
         Task<TrainingViewDTO> AddTrainingAsync(Guid userId, TrainingCreateDTO trainingDTO);
         Task<IEnumerable<TrainingSimpleViewDTO>> GetUserTrainingsAsync(Guid userId);
+        Task<TrainingViewDTO> GetUserTrainingByIdAsync(Guid userId, Guid trainingId);
     }
 }

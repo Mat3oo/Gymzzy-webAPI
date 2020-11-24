@@ -17,9 +17,9 @@ namespace GymzzyWebAPI.DAL.Repositories
             _context = context;
         }
 
-        public async Task AddAsync(TEntity entity)
+        public void Add(TEntity entity)
         {
-            await _context.Set<TEntity>().AddAsync(entity);
+            _context.Set<TEntity>().Add(entity);
         }
 
         public void Delete(TEntity entity)
@@ -34,7 +34,7 @@ namespace GymzzyWebAPI.DAL.Repositories
 
         public IQueryable<TEntity> GetAll()
         {
-            return _context.Set<TEntity>();
+            return _context.Set<TEntity>().AsQueryable();
         }
 
         public void Update(TEntity entity)

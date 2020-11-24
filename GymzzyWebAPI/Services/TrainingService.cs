@@ -35,14 +35,21 @@ namespace GymzzyWebAPI.Services
 
             foreach (var item in training.Series)
             {
-                var exercise = _unitOfWork.Exercise.GetByName(item.Exercise.Name);
-                if (exercise != null)
+                try
                 {
-                    item.Exercise = exercise;
+                    var exercise = await _unitOfWork.Exercise.GetByNameAsync(item.Exercise.Name);
+                    if (exercise != null)
+                    {
+                        item.Exercise = exercise;
+                    }
+                }
+                catch (InvalidOperationException)
+                {
+                    throw new SystemException("There are Exercise Names conflicts in context.");
                 }
             }
 
-            await _unitOfWork.Trainings.AddAsync(training);
+            _unitOfWork.Trainings.Add(training);
             await _unitOfWork.SaveChangesAsync();
 
             return _mapper.Map<TrainingViewDTO>(training);
@@ -55,6 +62,21 @@ namespace GymzzyWebAPI.Services
                 .ToListAsync();
 
             return _mapper.Map<IEnumerable<TrainingSimpleViewDTO>>(userTrainings);
+        }
+
+        public async Task<TrainingViewDTO> GetUserTrainingByIdAsync(Guid userId, Guid trainingId)
+        {
+            var training = await _unitOfWork.Trainings.GetWithDetailsAsync(trainingId);
+            if (training is default(Training))
+            {
+                return null;
+            }
+            else if (training.UserId != userId)
+            {
+                return null;
+            }
+
+            return _mapper.Map<TrainingViewDTO>(training);
         }
     }
 }

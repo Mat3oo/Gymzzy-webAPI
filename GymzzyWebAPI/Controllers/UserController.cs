@@ -84,7 +84,7 @@ namespace GymzzyWebAPI.Controllers
                 return UnprocessableEntity(e.Data["Errors"]);
             }
 
-            return Created($"api/user", created);
+            return CreatedAtAction(nameof(GetUser), created);
         }
 
         [HttpPost]
