@@ -22,18 +22,18 @@ namespace GymzzyWebAPI.Controllers
         [HttpGet]
         public async Task<IActionResult> GetUser()
         {
-            var parseResult = Guid.TryParse(User.FindFirstValue(ClaimTypes.NameIdentifier), out Guid id);
+            var parseResult = Guid.TryParse(User.FindFirstValue(ClaimTypes.NameIdentifier), out Guid userId);
 
             if (!parseResult)
             {
-                return BadRequest($"Invalid user id format. Given id: \"{id}\", try to relogin");
+                return BadRequest($"Invalid user id format. Given id: \"{userId}\", try to relogin");
             }
 
-            var userDetails = await _userService.GetUserDetailsAsync(id);
+            var userDetails = await _userService.GetUserDetailsAsync(userId);
 
             if (userDetails == null)
             {
-                return NotFound($"User with id: \"{id}\" doesn't exist.");
+                return NotFound($"User with id: \"{userId}\" doesn't exist.");
             }
 
             return Ok(userDetails);
@@ -42,17 +42,17 @@ namespace GymzzyWebAPI.Controllers
         [HttpPut]
         public async Task<IActionResult> UpdateUser(UserDetailsEditDTO userDetails)
         {
-            var parseResult = Guid.TryParse(User.FindFirstValue(ClaimTypes.NameIdentifier), out Guid id);
+            var parseResult = Guid.TryParse(User.FindFirstValue(ClaimTypes.NameIdentifier), out Guid userId);
 
             if (!parseResult)
             {
-                return BadRequest($"Invalid user id format. Given id: \"{id}\", try to relogin");
+                return BadRequest($"Invalid user id format. Given id: \"{userId}\", try to relogin");
             }
 
             short result;
             try
             {
-                result = await _userService.UpdateUserDetailsAsync(id, userDetails);
+                result = await _userService.UpdateUserDetailsAsync(userId, userDetails);
             }
             catch (ArgumentException e)
             {
@@ -62,7 +62,7 @@ namespace GymzzyWebAPI.Controllers
             return result switch
             {
                 0 => NoContent(),
-                1 => NotFound($"User with id: \"{id}\" doesn't exist."),
+                1 => NotFound($"User with id: \"{userId}\" doesn't exist."),
                 _ => throw new NotImplementedException()
             };
         }
