@@ -92,6 +92,16 @@ namespace GymzzyWebAPI.Services
             return _mapper.Map<TrainingViewDTO>(training);
         }
 
+        public async Task DeleteUserTrainingAsync(Guid userId, Guid trainingId)
+        {
+            var training = await _unitOfWork.Trainings.GetAsync(trainingId);
+            if (training != null && training.UserId == userId)
+            {
+                _unitOfWork.Trainings.Delete(training);
+                await _unitOfWork.SaveChangesAsync();
+            }
+        }
+
         private async Task AssignExistedExercises(ICollection<Series> series)
         {
             foreach (var item in series)

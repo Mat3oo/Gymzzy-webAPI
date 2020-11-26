@@ -90,5 +90,20 @@ namespace GymzzyWebAPI.Controllers
                 _ => throw new NotImplementedException()
             };
         }
+
+        [HttpDelete("{trainingId}")]
+        public async Task<IActionResult> DeleteTraining(Guid trainingId)
+        {
+            var parseResult = Guid.TryParse(User.FindFirstValue(ClaimTypes.NameIdentifier), out Guid id);
+
+            if (!parseResult)
+            {
+                return BadRequest($"Invalid user id format. Given id: \"{id}\", try to relogin");
+            }
+
+            await _trainingService.DeleteUserTrainingAsync(id, trainingId);
+
+            return NoContent();
+        }
     }
 }

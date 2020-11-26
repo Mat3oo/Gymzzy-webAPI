@@ -11,5 +11,6 @@ namespace GymzzyWebAPI.Services.Interfaces
         Task<short> UpdateTrainingAsync(Guid userId, Guid trainingId, TrainingEditDTO trainingDTO);
         Task<IEnumerable<TrainingSimpleViewDTO>> GetUserTrainingsAsync(Guid userId);
         Task<TrainingViewDTO> GetUserTrainingByIdAsync(Guid userId, Guid trainingId);
+        Task DeleteUserTrainingAsync(Guid userId, Guid trainingId);
     }
 }
