@@ -33,21 +33,7 @@ namespace GymzzyWebAPI.Services
             var training = _mapper.Map<Training>(trainingDTO);
             training.UserId = userId;
 
-            foreach (var item in training.Series)
-            {
-                try
-                {
-                    var exercise = await _unitOfWork.Exercise.GetByNameAsync(item.Exercise.Name);
-                    if (exercise != null)
-                    {
-                        item.Exercise = exercise;
-                    }
-                }
-                catch (InvalidOperationException)
-                {
-                    throw new SystemException("There are Exercise Names conflicts in context.");
-                }
-            }
+            await AssignExistedExercises(training.Series);
 
             _unitOfWork.Trainings.Add(training);
             await _unitOfWork.SaveChangesAsync();
@@ -79,21 +65,7 @@ namespace GymzzyWebAPI.Services
 
             _mapper.Map(trainingDTO, training);
 
-            foreach (var item in training.Series)
-            {
-                try
-                {
-                    var exercise = await _unitOfWork.Exercise.GetByNameAsync(item.Exercise.Name);
-                    if (exercise != null)
-                    {
-                        item.Exercise = exercise;
-                    }
-                }
-                catch (InvalidOperationException)
-                {
-                    throw new SystemException("There are Exercise Names conflicts in context.");
-                }
-            }
+            await AssignExistedExercises(training.Series);
 
             await _unitOfWork.SaveChangesAsync();
 
@@ -118,6 +90,25 @@ namespace GymzzyWebAPI.Services
             }
 
             return _mapper.Map<TrainingViewDTO>(training);
+        }
+
+        private async Task AssignExistedExercises(ICollection<Series> series)
+        {
+            foreach (var item in series)
+            {
+                try
+                {
+                    var exercise = await _unitOfWork.Exercise.GetByNameAsync(item.Exercise.Name);
+                    if (exercise != null)
+                    {
+                        item.Exercise = exercise;
+                    }
+                }
+                catch (InvalidOperationException)
+                {
+                    throw new SystemException("There are Exercise Names conflicts in context.");
+                }
+            }
         }
     }
 }
