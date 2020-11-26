@@ -1,7 +1,6 @@
 ﻿using GymzzyWebAPI.Models.DTO;
 using GymzzyWebAPI.Services.Interfaces;
 using Microsoft.AspNetCore.Authorization;
-using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using System;
 using System.Security.Claims;
@@ -64,7 +63,7 @@ namespace GymzzyWebAPI.Controllers
             {
                 0 => NoContent(),
                 1 => NotFound($"User with id: \"{id}\" doesn't exist."),
-                _ => StatusCode(StatusCodes.Status500InternalServerError, "Sommething goes wrong.")
+                _ => throw new NotImplementedException()
             };
         }
 
