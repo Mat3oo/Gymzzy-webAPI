@@ -25,13 +25,13 @@ namespace GymzzyWebAPI.Controllers
 
             if (!parseResult)
             {
-                return BadRequest($"Invalid user id format. Given id: \"{userId}\", try to relogin");
+                return BadRequest(new { message = $"Invalid user id format. Given id: \"{userId}\", try to relogin" });
             }
 
             var trainingById = await _trainingService.GetUserTrainingByIdAsync(userId, trainingId);
             if (trainingById is null)
             {
-                return NotFound($"User doesn't have training with id: \"{trainingId}\".");
+                return NotFound(new { message = $"User doesn't have training with id: \"{trainingId}\"." });
             }
 
             return Ok(trainingById);
@@ -44,7 +44,7 @@ namespace GymzzyWebAPI.Controllers
 
             if (!parseResult)
             {
-                return BadRequest($"Invalid user id format. Given id: \"{userId}\", try to relogin");
+                return BadRequest(new { message = $"Invalid user id format. Given id: \"{userId}\", try to relogin" });
             }
 
             return Ok(await _trainingService.GetUserTrainingsAsync(userId));
@@ -57,13 +57,13 @@ namespace GymzzyWebAPI.Controllers
 
             if (!parseResult)
             {
-                return BadRequest($"Invalid user id format. Given id: \"{userId}\", try to relogin");
+                return BadRequest(new { message = $"Invalid user id format. Given id: \"{userId}\", try to relogin" });
             }
 
             var createdTraining = await _trainingService.AddTrainingAsync(userId, training);
             if (createdTraining is null)
             {
-                return NotFound($"User with id: \"{userId}\" doesn't exist.");
+                return NotFound(new { message = $"User with id: \"{userId}\" doesn't exist." });
             }
 
             return CreatedAtAction(nameof(GetTraining), new { trainingId = createdTraining.Id }, createdTraining);
@@ -76,7 +76,7 @@ namespace GymzzyWebAPI.Controllers
 
             if (!parseResult)
             {
-                return BadRequest($"Invalid user id format. Given id: \"{userId}\", try to relogin");
+                return BadRequest(new { message = $"Invalid user id format. Given id: \"{userId}\", try to relogin" });
             }
 
             var result = await _trainingService.UpdateTrainingAsync(userId, trainingId, training);
@@ -84,9 +84,9 @@ namespace GymzzyWebAPI.Controllers
             return result switch
             {
                 0 => NoContent(),
-                1 => NotFound($"User with id: \"{userId}\" doesn't exist."),
-                2 => NotFound($"User doesn't have training with id: \"{trainingId}\"."),
-                3 => Conflict($"Inconsistent Series Id/Ids."),
+                1 => NotFound(new { message = $"User with id: \"{userId}\" doesn't exist." }),
+                2 => NotFound(new { message = $"User doesn't have training with id: \"{trainingId}\"." }),
+                3 => Conflict(new { message = $"Inconsistent Series Id/Ids." }),
                 _ => throw new NotImplementedException()
             };
         }
@@ -98,7 +98,7 @@ namespace GymzzyWebAPI.Controllers
 
             if (!parseResult)
             {
-                return BadRequest($"Invalid user id format. Given id: \"{userId}\", try to relogin");
+                return BadRequest(new { message = $"Invalid user id format. Given id: \"{userId}\", try to relogin" });
             }
 
             await _trainingService.DeleteUserTrainingAsync(userId, trainingId);

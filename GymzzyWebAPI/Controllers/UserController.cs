@@ -26,14 +26,14 @@ namespace GymzzyWebAPI.Controllers
 
             if (!parseResult)
             {
-                return BadRequest($"Invalid user id format. Given id: \"{userId}\", try to relogin");
+                return BadRequest(new { message = $"Invalid user id format. Given id: \"{userId}\", try to relogin" });
             }
 
             var userDetails = await _userService.GetUserDetailsAsync(userId);
 
             if (userDetails == null)
             {
-                return NotFound($"User with id: \"{userId}\" doesn't exist.");
+                return NotFound(new { message = $"User with id: \"{userId}\" doesn't exist." });
             }
 
             return Ok(userDetails);
@@ -46,7 +46,7 @@ namespace GymzzyWebAPI.Controllers
 
             if (!parseResult)
             {
-                return BadRequest($"Invalid user id format. Given id: \"{userId}\", try to relogin");
+                return BadRequest(new { message = $"Invalid user id format. Given id: \"{userId}\", try to relogin" });
             }
 
             short result;
@@ -62,7 +62,7 @@ namespace GymzzyWebAPI.Controllers
             return result switch
             {
                 0 => NoContent(),
-                1 => NotFound($"User with id: \"{userId}\" doesn't exist."),
+                1 => NotFound(new { message = $"User with id: \"{userId}\" doesn't exist." }),
                 _ => throw new NotImplementedException()
             };
         }
