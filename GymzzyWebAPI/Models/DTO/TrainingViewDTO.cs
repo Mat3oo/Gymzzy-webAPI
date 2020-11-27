@@ -10,9 +10,9 @@ namespace GymzzyWebAPI.Models.DTO
         [Required]
         public DateTime? Date { get; set; }
         [Required]
-        public ICollection<SeriesDTO> Series { get; set; }
+        public ICollection<TrainingViewSeriesDTO> Series { get; set; }
 
-        public class SeriesDTO
+        public class TrainingViewSeriesDTO
         {
             public Guid Id { get; set; }
             [Required]
@@ -20,9 +20,9 @@ namespace GymzzyWebAPI.Models.DTO
             [Required]
             public float? Weight { get; set; }
             [Required]
-            public ExerciseDTO Exercise { get; set; }
+            public TrainingViewExerciseDTO Exercise { get; set; }
 
-            public class ExerciseDTO
+            public class TrainingViewExerciseDTO
             {
                 public Guid Id { get; set; }
                 [Required]

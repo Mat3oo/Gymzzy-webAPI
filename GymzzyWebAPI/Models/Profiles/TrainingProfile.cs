@@ -10,16 +10,16 @@ namespace GymzzyWebAPI.Models.Profiles
             CreateMap<Training, TrainingSimpleViewDTO>();
 
             CreateMap<TrainingCreateDTO, Training>();
-            CreateMap<TrainingCreateDTO.SeriesDTO, Series>();
-            CreateMap<TrainingCreateDTO.SeriesDTO.ExerciseDTO, Exercise>();
+            CreateMap<TrainingCreateDTO.TrainingCreateSeriesDTO, Series>();
+            CreateMap<TrainingCreateDTO.TrainingCreateSeriesDTO.TrainingCreateExerciseDTO, Exercise>();
 
             CreateMap<TrainingEditDTO, Training>();
-            CreateMap<TrainingEditDTO.SeriesDTO, Series>();
-            CreateMap<TrainingEditDTO.SeriesDTO.ExerciseDTO, Exercise>();
+            CreateMap<TrainingEditDTO.TrainingEditSeriesDTO, Series>();
+            CreateMap<TrainingEditDTO.TrainingEditSeriesDTO.TrainingEditExerciseDTO, Exercise>();
 
             CreateMap<Training, TrainingViewDTO>();
-            CreateMap<Series, TrainingViewDTO.SeriesDTO>();
-            CreateMap<Exercise, TrainingViewDTO.SeriesDTO.ExerciseDTO>();
+            CreateMap<Series, TrainingViewDTO.TrainingViewSeriesDTO>();
+            CreateMap<Exercise, TrainingViewDTO.TrainingViewSeriesDTO.TrainingViewExerciseDTO>();
         }
     }
 }
