@@ -11,6 +11,11 @@
     <NoWarn>$(NoWarn);1591;</NoWarn>
   </PropertyGroup>
 
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|AnyCPU'">
+    <GenerateDocumentationFile>true</GenerateDocumentationFile>
+    <NoWarn>$(NoWarn);1591;</NoWarn>
+  </PropertyGroup>
+
   <ItemGroup>
     <Compile Remove="Migrations\20201109113152_Initial_Migration.cs" />
     <Compile Remove="Migrations\20201109113152_Initial_Migration.Designer.cs" />
