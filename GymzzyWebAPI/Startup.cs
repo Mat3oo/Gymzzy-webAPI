@@ -135,6 +135,16 @@ namespace GymzzyWebAPI
                 var xmlPath = Path.Combine(AppContext.BaseDirectory, xmlFile);
                 options.IncludeXmlComments(xmlPath);
             });
+
+            services.AddCors(options =>
+            {
+                options.AddPolicy("DevelopmentPolicy", builder =>
+                {
+                    builder.AllowAnyHeader()
+                        .AllowAnyMethod()
+                        .AllowAnyOrigin();
+                });
+            });
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
@@ -154,6 +164,11 @@ namespace GymzzyWebAPI
             });
 
             app.UseRouting();
+
+            if (env.IsDevelopment())
+            {
+                app.UseCors("DevelopmentPolicy");
+            }
 
             app.UseAuthentication();
 
