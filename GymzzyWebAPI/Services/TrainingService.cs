@@ -104,6 +104,8 @@ namespace GymzzyWebAPI.Services
 
         private async Task AssignExistedExercises(ICollection<Series> series)
         {
+            var newExercises = new Dictionary<string, Exercise>();
+
             foreach (var item in series)
             {
                 try
@@ -112,6 +114,11 @@ namespace GymzzyWebAPI.Services
                     if (exercise != null)
                     {
                         item.Exercise = exercise;
+                    }
+                    else
+                    {
+                        newExercises.TryAdd(item.Exercise.Name, item.Exercise);
+                        item.Exercise = newExercises[item.Exercise.Name];
                     }
                 }
                 catch (InvalidOperationException)
