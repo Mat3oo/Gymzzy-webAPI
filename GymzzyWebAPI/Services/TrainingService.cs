@@ -76,6 +76,7 @@ namespace GymzzyWebAPI.Services
         {
             var userTrainings = await _unitOfWork.Trainings.GetAll()
                 .Where(p => p.UserId == userId)
+                .OrderByDescending(k => k.Date)
                 .ToListAsync();
 
             return _mapper.Map<IEnumerable<TrainingSimpleViewDTO>>(userTrainings);
