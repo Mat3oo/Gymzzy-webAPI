@@ -21,6 +21,11 @@ namespace GymzzyWebAPI.DAL
             {
                 entity.HasIndex(p => p.Name).IsUnique();
             });
+
+            builder.Entity<Series>()
+                .HasOne(p => p.Exercise)
+                .WithMany(p => p.Series)
+                .OnDelete(DeleteBehavior.SetNull);
         }
     }
 }
