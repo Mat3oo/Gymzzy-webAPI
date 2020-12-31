@@ -16,5 +16,7 @@ namespace GymzzyWebAPI.Models
 
         public Guid? ExerciseId { get; set; }
         public Exercise Exercise { get; set; }
+
+        public PersonalRecord PersonalRecord { get; set; }
     }
 }
