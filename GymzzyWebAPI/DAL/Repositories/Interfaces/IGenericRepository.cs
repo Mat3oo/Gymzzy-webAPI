@@ -9,6 +9,7 @@ namespace GymzzyWebAPI.DAL.Repositories.Interfaces
         Task<TEntity> GetAsync(Guid id);
         IQueryable<TEntity> GetAll();
         void Add(TEntity entity);
+        void AddRange(TEntity[] entities);
         void Update(TEntity entity);
         void Delete(TEntity entity);
     }

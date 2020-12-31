@@ -7,6 +7,8 @@ namespace GymzzyWebAPI.DAL.Repositories.Interfaces
         IUserRepository Users { get; }
         ITrainingRepository Trainings { get; }
         IExerciseRepository Exercise { get; }
+        IPersonalRecordRepository PersonalRecord { get; }
+        ISeriesRepository Series { get; }
 
         Task<int> SaveChangesAsync();
     }

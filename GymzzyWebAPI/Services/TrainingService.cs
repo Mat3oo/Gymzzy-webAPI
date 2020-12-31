@@ -33,9 +33,12 @@ namespace GymzzyWebAPI.Services
             var training = _mapper.Map<Training>(trainingDTO);
             training.UserId = userId;
 
-            await AssignExistedExercises(training.Series);
+            await AssignExistingExercises(training.Series);
 
             _unitOfWork.Trainings.Add(training);
+
+            await CalculatePersonalRecords(training.Series, userId);
+
             await _unitOfWork.SaveChangesAsync();
 
             return _mapper.Map<TrainingViewDTO>(training);
@@ -65,7 +68,9 @@ namespace GymzzyWebAPI.Services
 
             _mapper.Map(trainingDTO, training);
 
-            await AssignExistedExercises(training.Series);
+            await AssignExistingExercises(training.Series);
+
+            await RecalculatePersonalRecordsAsync(userId);
 
             await _unitOfWork.SaveChangesAsync();
 
@@ -99,11 +104,14 @@ namespace GymzzyWebAPI.Services
             if (training != null && training.UserId == userId)
             {
                 _unitOfWork.Trainings.Delete(training);
+
+                await RecalculatePersonalRecordsAsync(userId);
+
                 await _unitOfWork.SaveChangesAsync();
             }
         }
 
-        private async Task AssignExistedExercises(ICollection<Series> series)
+        private async Task AssignExistingExercises(IEnumerable<Series> series)
         {
             var newExercises = new Dictionary<string, Exercise>();
 
@@ -115,11 +123,13 @@ namespace GymzzyWebAPI.Services
                     if (exercise != null)
                     {
                         item.Exercise = exercise;
+                        item.ExerciseId = exercise.Id;
                     }
                     else
                     {
                         newExercises.TryAdd(item.Exercise.Name, item.Exercise);
                         item.Exercise = newExercises[item.Exercise.Name];
+                        item.ExerciseId = newExercises[item.Exercise.Name].Id;
                     }
                 }
                 catch (InvalidOperationException)
@@ -127,6 +137,38 @@ namespace GymzzyWebAPI.Services
                     throw new SystemException("There are Exercise Names conflicts in context.");
                 }
             }
+        }
+        private async Task CalculatePersonalRecords(IEnumerable<Series> series, Guid userId)
+        {
+            var filteredMaxes = series.GroupBy(p => new { p.ExerciseId, p.Weight })
+                .SelectMany(p => p.Where(m => m.Reps == p.Max(r => r.Reps)));
+
+            foreach (var item in filteredMaxes)
+            {
+                var oldRecord = await _unitOfWork.PersonalRecord.GetUserOldRecord(item, userId);
+                if (oldRecord != default(PersonalRecord))
+                {
+                    oldRecord.Series = item;
+                }
+            }
+        }
+
+        private async Task RecalculatePersonalRecordsAsync(Guid userId)
+        {
+            await _unitOfWork.SaveChangesAsync();
+
+            var newPersonalRecordsSeries = await _unitOfWork.Series.GetNewPersonalRecordsSeriesIdsAsync(userId);
+
+            var newPersonalRecords = new List<PersonalRecord>(newPersonalRecordsSeries.Count());
+
+            foreach (var item in newPersonalRecordsSeries)
+            {
+                newPersonalRecords.Add(new PersonalRecord { SeriesId = item });
+            }
+
+            _unitOfWork.PersonalRecord.DeleteAllUserRecords(userId);
+
+            _unitOfWork.PersonalRecord.AddRange(newPersonalRecords.ToArray());
         }
     }
 }

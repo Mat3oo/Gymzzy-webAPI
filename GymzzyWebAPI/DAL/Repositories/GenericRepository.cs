@@ -22,6 +22,11 @@ namespace GymzzyWebAPI.DAL.Repositories
             _context.Set<TEntity>().Add(entity);
         }
 
+        public void AddRange(TEntity[] entities)
+        {
+            _context.Set<TEntity>().AddRange(entities);
+        }
+
         public void Delete(TEntity entity)
         {
             _context.Set<TEntity>().Remove(entity);

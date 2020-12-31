@@ -8,6 +8,8 @@ namespace GymzzyWebAPI.DAL.Repositories
         public IUserRepository Users { get; }
         public ITrainingRepository Trainings { get; }
         public IExerciseRepository Exercise { get; }
+        public IPersonalRecordRepository PersonalRecord { get; }
+        public ISeriesRepository Series { get; }
 
         private readonly UserContext _userContext;
         private readonly WorkoutContext _workoutContext;
@@ -19,6 +21,8 @@ namespace GymzzyWebAPI.DAL.Repositories
             Users = new UserRepository(_userContext);
             Trainings = new TrainingRepository(_workoutContext);
             Exercise = new ExerciseRepository(_workoutContext);
+            PersonalRecord = new PersonalRecordRepository(_workoutContext);
+            Series = new SeriesRepository(_workoutContext);
         }
 
         public async Task<int> SaveChangesAsync()
