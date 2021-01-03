@@ -30,6 +30,6 @@ namespace GymzzyWebAPI.Models.DTO
         public float? Weight { get; set; }
 
         [Required]
-        public DateTime? Birthday { get; set; }
+        public DateTime? Birthdate { get; set; }
     }
 }

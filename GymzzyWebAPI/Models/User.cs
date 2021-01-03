@@ -13,6 +13,6 @@ namespace GymzzyWebAPI.Models
         public char? Gender { get; set; }
         public float? Height { get; set; }
         public float? Weight { get; set; }
-        public DateTime? Birthday { get; set; }
+        public DateTime? Birthdate { get; set; }
     }
 }
