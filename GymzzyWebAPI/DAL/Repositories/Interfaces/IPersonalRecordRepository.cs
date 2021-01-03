@@ -9,5 +9,6 @@ namespace GymzzyWebAPI.DAL.Repositories.Interfaces
     {
         Task<PersonalRecord> GetUserOldRecord(Series series, Guid userId);
         void DeleteAllUserRecords(Guid userId);
+        Task<IEnumerable<Guid>> CheckRecordsBySeriesIdsAsync(IEnumerable<Guid> seriesIds);
     }
 }

@@ -95,7 +95,9 @@ namespace GymzzyWebAPI.Services
                 return null;
             }
 
-            return _mapper.Map<TrainingViewDTO>(training);
+            var mapped = _mapper.Map<TrainingViewDTO>(training);
+
+            return await MarkAsRecordsAsync(mapped);
         }
 
         public async Task DeleteUserTrainingAsync(Guid userId, Guid trainingId)
@@ -169,6 +171,22 @@ namespace GymzzyWebAPI.Services
             _unitOfWork.PersonalRecord.DeleteAllUserRecords(userId);
 
             _unitOfWork.PersonalRecord.AddRange(newPersonalRecords.ToArray());
+        }
+
+        private async Task<TrainingViewDTO> MarkAsRecordsAsync(TrainingViewDTO trainingViewDTO)
+        {
+            var seriesIds = trainingViewDTO.Series.Select(p => p.Id);
+
+            var checkedRecords = await _unitOfWork.PersonalRecord.CheckRecordsBySeriesIdsAsync(seriesIds);
+
+            var toMark = trainingViewDTO.Series.Where(p => checkedRecords.Contains(p.Id));
+
+            foreach (var item in toMark)
+            {
+                item.Record = true;
+            }
+
+            return trainingViewDTO;
         }
     }
 }

@@ -41,5 +41,12 @@ namespace GymzzyWebAPI.DAL.Repositories
             _context.PersonalRecord.RemoveRange(_context.PersonalRecord.Where(p=>p.Series.Training.UserId == userId));
         }
 
+        public async Task<IEnumerable<Guid>> CheckRecordsBySeriesIdsAsync(IEnumerable<Guid> seriesIds)
+        {
+            return await _context.PersonalRecord
+                .Where(p => seriesIds.Contains(p.SeriesId))
+                .Select(p => p.SeriesId)
+                .ToArrayAsync();
+        }
     }
 }
