@@ -162,10 +162,7 @@ namespace GymzzyWebAPI
 
             app.UseRouting();
 
-            if (env.IsDevelopment())
-            {
-                app.UseCors("DevelopmentPolicy");
-            }
+            app.UseCors("DevelopmentPolicy");
 
             app.UseAuthentication();
 
