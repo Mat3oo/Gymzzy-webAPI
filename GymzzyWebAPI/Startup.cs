@@ -47,18 +47,11 @@ namespace GymzzyWebAPI
 
             services.Configure<IdentityOptions>(options => options.User.RequireUniqueEmail = true);
 
-            if (Environment.IsDevelopment())
+            services.Configure<IdentityOptions>(options =>
             {
-                //Password Strength Setting
-                services.Configure<IdentityOptions>(options =>
-                {
-                    options.Password.RequireDigit = false;
-                    options.Password.RequiredLength = 4;
-                    options.Password.RequireNonAlphanumeric = false;
-                    options.Password.RequireUppercase = false;
-                    options.Password.RequireLowercase = false;
-                });
-            }
+                Configuration.GetSection("PasswordRequirments")
+                    .Bind(options.Password);
+            });
 
             services.AddAuthentication(options =>
             {
