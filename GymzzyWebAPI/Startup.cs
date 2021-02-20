@@ -47,14 +47,10 @@ namespace GymzzyWebAPI
 
             services.Configure<IdentityOptions>(options => options.User.RequireUniqueEmail = true);
 
-            //Password Strength Setting
             services.Configure<IdentityOptions>(options =>
             {
-                options.Password.RequireDigit = false;
-                options.Password.RequiredLength = 4;
-                options.Password.RequireNonAlphanumeric = false;
-                options.Password.RequireUppercase = false;
-                options.Password.RequireLowercase = false;
+                Configuration.GetSection("PasswordRequirments")
+                    .Bind(options.Password);
             });
 
             services.AddAuthentication(options =>
@@ -135,7 +131,7 @@ namespace GymzzyWebAPI
 
             services.AddCors(options =>
             {
-                options.AddPolicy("DevelopmentPolicy", builder =>
+                options.AddPolicy("DefaultCORSPolicy", builder =>
                 {
                     builder.AllowAnyHeader()
                         .AllowAnyMethod()
@@ -162,7 +158,7 @@ namespace GymzzyWebAPI
 
             app.UseRouting();
 
-            app.UseCors("DevelopmentPolicy");
+            app.UseCors("DefaultCORSPolicy");
 
             app.UseAuthentication();
 
