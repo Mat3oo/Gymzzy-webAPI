@@ -131,7 +131,7 @@ namespace GymzzyWebAPI
 
             services.AddCors(options =>
             {
-                options.AddPolicy("DevelopmentPolicy", builder =>
+                options.AddPolicy("DefaultCORSPolicy", builder =>
                 {
                     builder.AllowAnyHeader()
                         .AllowAnyMethod()
@@ -158,10 +158,7 @@ namespace GymzzyWebAPI
 
             app.UseRouting();
 
-            if (env.IsDevelopment())
-            {
-                app.UseCors("DevelopmentPolicy");
-            }
+            app.UseCors("DefaultCORSPolicy");
 
             app.UseAuthentication();
 
