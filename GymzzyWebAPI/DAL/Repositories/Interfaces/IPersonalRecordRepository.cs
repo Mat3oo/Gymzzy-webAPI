@@ -7,8 +7,8 @@ namespace GymzzyWebAPI.DAL.Repositories.Interfaces
 {
     public interface IPersonalRecordRepository : IGenericRepository<PersonalRecord>
     {
-        Task<PersonalRecord> GetUserOldRecord(Series series, Guid userId);
+        Task<PersonalRecord> GetUserOldRecord(Set set, Guid userId);
         void DeleteAllUserRecords(Guid userId);
-        Task<IEnumerable<Guid>> CheckRecordsBySeriesIdsAsync(IEnumerable<Guid> seriesIds);
+        Task<IEnumerable<Guid>> CheckRecordsBySetsIdsAsync(IEnumerable<Guid> setsIds);
     }
 }

@@ -6,7 +6,7 @@ namespace GymzzyWebAPI.Models
     {
         public Guid Id { get; set; }
 
-        public Guid SeriesId { get; set; }
-        public Series Series { get; set; }
+        public Guid SetId { get; set; }
+        public Set Set { get; set; }
     }
 }

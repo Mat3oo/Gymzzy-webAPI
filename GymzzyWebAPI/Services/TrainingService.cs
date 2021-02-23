@@ -33,15 +33,17 @@ namespace GymzzyWebAPI.Services
             var training = _mapper.Map<Training>(trainingDTO);
             training.UserId = userId;
 
-            await AssignExistingExercises(training.Series);
+            await AssignExistingExerciseDetails(training.Exercises);
 
             _unitOfWork.Trainings.Add(training);
 
-            await CalculatePersonalRecords(training.Series, userId);
+            await CalculatePersonalRecords(training.Exercises, userId);
 
             await _unitOfWork.SaveChangesAsync();
 
-            return _mapper.Map<TrainingViewDTO>(training);
+            var mapped = _mapper.Map<TrainingViewDTO>(training);
+
+            return await MarkAsRecordsAsync(mapped);
         }
 
         public async Task<short> UpdateTrainingAsync(Guid userId, Guid trainingId, TrainingEditDTO trainingDTO)
@@ -58,17 +60,34 @@ namespace GymzzyWebAPI.Services
                 return 2;
             }
 
-            foreach (var item in trainingDTO.Series)
+            #region Verify Exercise Ids
+            var allExerciseIds = training.Exercises
+                .Select(p => p.Id as Guid?)
+                .Concat(new Guid?[] { null });
+
+            if (!trainingDTO.Exercises.All(p => allExerciseIds.Contains(p.Id)))
             {
-                if (!training.Series.Any(p => p.Id == item.Id) && item.Id != null)
-                {
-                    return 3;
-                };
+                return 3;
             }
+            #endregion
+
+            #region Verify Set Ids
+            var allSetIds = training.Exercises
+                .SelectMany(p => p.Sets.Select(s => s.Id as Guid?))
+                .Concat(new Guid?[] { null });
+
+            var allDTOSetIds = trainingDTO.Exercises
+                .SelectMany(p => p.Sets.Select(s => s.Id));
+
+            if (!allDTOSetIds.All(p => allSetIds.Contains(p)))
+            {
+                return 3;
+            }
+            #endregion Verify Set Ids
 
             _mapper.Map(trainingDTO, training);
 
-            await AssignExistingExercises(training.Series);
+            await AssignExistingExerciseDetails(training.Exercises);
 
             await RecalculatePersonalRecordsAsync(userId);
 
@@ -113,25 +132,25 @@ namespace GymzzyWebAPI.Services
             }
         }
 
-        private async Task AssignExistingExercises(IEnumerable<Series> series)
+        private async Task AssignExistingExerciseDetails(IEnumerable<Exercise> exercises)
         {
-            var newExercises = new Dictionary<string, Exercise>();
+            var newExercises = new Dictionary<string, ExerciseDetails>();
 
-            foreach (var item in series)
+            foreach (var item in exercises)
             {
                 try
                 {
-                    var exercise = await _unitOfWork.Exercise.GetByNameAsync(item.Exercise.Name);
+                    var exercise = await _unitOfWork.ExerciseDetails.GetByNameAsync(item.ExerciseDetails.Name);
                     if (exercise != null)
                     {
-                        item.Exercise = exercise;
-                        item.ExerciseId = exercise.Id;
+                        item.ExerciseDetails = exercise;
+                        item.ExerciseDetailsId = exercise.Id;
                     }
                     else
                     {
-                        newExercises.TryAdd(item.Exercise.Name, item.Exercise);
-                        item.Exercise = newExercises[item.Exercise.Name];
-                        item.ExerciseId = newExercises[item.Exercise.Name].Id;
+                        newExercises.TryAdd(item.ExerciseDetails.Name, item.ExerciseDetails);
+                        item.ExerciseDetails = newExercises[item.ExerciseDetails.Name];
+                        item.ExerciseDetailsId = newExercises[item.ExerciseDetails.Name].Id;
                     }
                 }
                 catch (InvalidOperationException)
@@ -140,17 +159,22 @@ namespace GymzzyWebAPI.Services
                 }
             }
         }
-        private async Task CalculatePersonalRecords(IEnumerable<Series> series, Guid userId)
+        private async Task CalculatePersonalRecords(IEnumerable<Exercise> exercises, Guid userId)
         {
-            var filteredMaxes = series.GroupBy(p => new { p.ExerciseId, p.Weight })
-                .SelectMany(p => p.Where(m => m.Reps == p.Max(r => r.Reps)));
+            List<Set> filteredMaxes = new List<Set>();
+
+            foreach (var item in exercises)
+            {
+                filteredMaxes.AddRange(item.Sets.GroupBy(p => p.Weight)
+                    .SelectMany(p => p.Where(w => w.Reps == p.Max(m => m.Reps)).Take(1)));
+            }
 
             foreach (var item in filteredMaxes)
             {
                 var oldRecord = await _unitOfWork.PersonalRecord.GetUserOldRecord(item, userId);
                 if (oldRecord != default(PersonalRecord))
                 {
-                    oldRecord.Series = item;
+                    oldRecord.Set = item;
                 }
             }
         }
@@ -159,13 +183,13 @@ namespace GymzzyWebAPI.Services
         {
             await _unitOfWork.SaveChangesAsync();
 
-            var newPersonalRecordsSeries = await _unitOfWork.Series.GetNewPersonalRecordsSeriesIdsAsync(userId);
+            var newPersonalRecordsSets = await _unitOfWork.Set.FindNewPersonalRecordsSetsIdsAsync(userId);
 
-            var newPersonalRecords = new List<PersonalRecord>(newPersonalRecordsSeries.Count());
+            var newPersonalRecords = new List<PersonalRecord>(newPersonalRecordsSets.Count());
 
-            foreach (var item in newPersonalRecordsSeries)
+            foreach (var item in newPersonalRecordsSets)
             {
-                newPersonalRecords.Add(new PersonalRecord { SeriesId = item });
+                newPersonalRecords.Add(new PersonalRecord { SetId = item });
             }
 
             _unitOfWork.PersonalRecord.DeleteAllUserRecords(userId);
@@ -175,11 +199,11 @@ namespace GymzzyWebAPI.Services
 
         private async Task<TrainingViewDTO> MarkAsRecordsAsync(TrainingViewDTO trainingViewDTO)
         {
-            var seriesIds = trainingViewDTO.Series.Select(p => p.Id);
+            var setsIds = trainingViewDTO.Exercises.SelectMany(p => p.Sets.Select(s => s.Id));
 
-            var checkedRecords = await _unitOfWork.PersonalRecord.CheckRecordsBySeriesIdsAsync(seriesIds);
+            var checkedRecords = await _unitOfWork.PersonalRecord.CheckRecordsBySetsIdsAsync(setsIds);
 
-            var toMark = trainingViewDTO.Series.Where(p => checkedRecords.Contains(p.Id));
+            var toMark = trainingViewDTO.Exercises.SelectMany(p => p.Sets.Where(s => checkedRecords.Contains(s.Id)));
 
             foreach (var item in toMark)
             {

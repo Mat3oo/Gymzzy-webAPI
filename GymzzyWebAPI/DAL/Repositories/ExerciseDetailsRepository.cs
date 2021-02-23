@@ -6,20 +6,20 @@ using System.Threading.Tasks;
 
 namespace GymzzyWebAPI.DAL.Repositories
 {
-    public class ExerciseRepository : GenericRepository<Exercise, WorkoutContext>, IExerciseRepository
+    public class ExerciseDetailsRepository : GenericRepository<ExerciseDetails, WorkoutContext>, IExerciseDetailsRepository
     {
         private readonly WorkoutContext _context;
-        public ExerciseRepository(WorkoutContext context) : base(context)
+        public ExerciseDetailsRepository(WorkoutContext context) : base(context)
         {
             _context = context;
         }
 
-        public async Task<Exercise> GetByNameAsync(string exerciseName)
+        public async Task<ExerciseDetails> GetByNameAsync(string exerciseName)
         {
             try
             {
-                var exercise = await _context.Exercise.SingleOrDefaultAsync(p => p.Name == exerciseName);
-                if (exercise is default(Exercise))
+                var exercise = await _context.ExerciseDetails.SingleOrDefaultAsync(p => p.Name == exerciseName);
+                if (exercise is default(ExerciseDetails))
                 {
                     return null;
                 }

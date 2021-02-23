@@ -3,7 +3,7 @@ using System.ComponentModel.DataAnnotations;
 
 namespace GymzzyWebAPI.Models
 {
-    public class Series
+    public class Set
     {
         public Guid Id { get; set; }
         [Required]
@@ -11,10 +11,7 @@ namespace GymzzyWebAPI.Models
         [Required]
         public float Weight { get; set; }
 
-        public Guid TrainingId { get; set; }
-        public Training Training { get; set; }
-
-        public Guid? ExerciseId { get; set; }
+        public Guid ExerciseId { get; set; }
         public Exercise Exercise { get; set; }
 
         public PersonalRecord PersonalRecord { get; set; }

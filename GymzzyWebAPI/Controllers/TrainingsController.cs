@@ -92,13 +92,15 @@ namespace GymzzyWebAPI.Controllers
         ///     POST api/trainings
         ///     {
         ///         "date": "2020-11-11T00:00:00",
-        ///         "series": [
+        ///         "exercises": [
         ///             {
-        ///                 "reps": 1,
-        ///                 "weight": 111.1,
-        ///                 "exercise": {
-        ///                     "name": "name"
-        ///                 }
+        ///                 "name": "name",
+        ///                 "sets": [
+        ///                     {
+        ///                         "weight": 111.1,
+        ///                         "reps": 1
+        ///                     }
+        ///                 ]
         ///             }
         ///         ]
         ///     }
@@ -146,17 +148,21 @@ namespace GymzzyWebAPI.Controllers
         ///     PUT api/trainings/00000000-0000-0000-0000-000000000000
         ///     {
         ///         "date": "2020-11-11T00:00:00",
-        ///         "series": [
+        ///         "exercises": [
         ///             {
-        ///                 "id":"00000000-0000-0000-0000-000000000000"
-        ///                 "reps": 1,
-        ///                 "weight": 111.1,
-        ///                 "exercise": {
-        ///                      "name": "name"
-        ///                 }
+        ///                 "id":"00000000-0000-0000-0000-000000000000",
+        ///                 "name": "name",
+        ///                 "sets": [
+        ///                     {
+        ///                         "id":"00000000-0000-0000-0000-000000000000"
+        ///                         "weight": 111.1,
+        ///                         "reps": 1
+        ///                     }
+        ///                 ]
         ///             }
         ///         ]
         ///     }
+        ///
         /// </remarks>
         /// <param name="trainingId">Guid Id</param>
         /// <param name="training"></param>
@@ -164,7 +170,7 @@ namespace GymzzyWebAPI.Controllers
         /// <response code="400">If the authenticated user id from token is invalid format.</response>
         /// <response code="204">Training details updated.</response>
         /// <response code="404">If the authenticated user doesn't exist or user doesn's have desirable training.</response>
-        /// <response code="409">If series Id/Ids in database are inconsistent.</response>
+        /// <response code="409">If exercise or set Id/Ids in database are inconsistent.</response>
         [HttpPut("{trainingId}")]
         [ProducesResponseType(typeof(ErrorResposneBodyDTO), StatusCodes.Status400BadRequest)]
         [ProducesResponseType(StatusCodes.Status204NoContent)]
@@ -190,7 +196,7 @@ namespace GymzzyWebAPI.Controllers
                 0 => NoContent(),
                 1 => NotFound(new ErrorResposneBodyDTO { DeveloperMessage = $"User with id: \"{userId}\" doesn't exist." }),
                 2 => NotFound(new ErrorResposneBodyDTO { DeveloperMessage = $"User doesn't have training with id: \"{trainingId}\"." }),
-                3 => Conflict(new ErrorResposneBodyDTO { DeveloperMessage = $"Inconsistent Series Id/Ids." }),
+                3 => Conflict(new ErrorResposneBodyDTO { DeveloperMessage = $"Inconsistent Exercise or Set Id/Ids." }),
                 _ => throw new NotImplementedException()
             };
         }

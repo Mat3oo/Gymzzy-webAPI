@@ -8,21 +8,24 @@ namespace GymzzyWebAPI.Models.DTO
     {
         [Required]
         public DateTime? Date { get; set; }
-        [Required]
-        public ICollection<TrainingCreateSeriesDTO> Series { get; set; }
 
-        public class TrainingCreateSeriesDTO
+        [Required]
+        public ICollection<TrainingCreateDTOExercise> Exercises { get; set; }
+
+        public class TrainingCreateDTOExercise
         {
             [Required]
-            public int? Reps { get; set; }
+            public string Name { get; set; }
+
             [Required]
-            public float? Weight { get; set; }
-            [Required]
-            public TrainingCreateExerciseDTO Exercise { get; set; }
-            public class TrainingCreateExerciseDTO
+            public ICollection<TrainingCreateDTOSet> Sets { get; set; }
+
+            public class TrainingCreateDTOSet
             {
                 [Required]
-                public string Name { get; set; }
+                public int? Reps { get; set; }
+                [Required]
+                public float? Weight { get; set; }
             }
         }
 
