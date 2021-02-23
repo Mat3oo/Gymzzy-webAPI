@@ -86,25 +86,6 @@ namespace GymzzyWebAPI.Controllers
         /// <summary>
         /// Add training.
         /// </summary>
-        /// <remarks>
-        /// Sample request:
-        ///
-        ///     POST api/trainings
-        ///     {
-        ///         "date": "2020-11-11T00:00:00",
-        ///         "exercises": [
-        ///             {
-        ///                 "name": "name",
-        ///                 "sets": [
-        ///                     {
-        ///                         "weight": 111.1,
-        ///                         "reps": 1
-        ///                     }
-        ///                 ]
-        ///             }
-        ///         ]
-        ///     }
-        /// </remarks>
         /// <param name="training"></param>
         /// <returns>Created training details.</returns>
         /// <response code="400">If the authenticated user id from token is invalid format.</response>
@@ -142,28 +123,6 @@ namespace GymzzyWebAPI.Controllers
         /// <summary>
         /// Update training details.
         /// </summary>
-        /// <remarks>
-        /// Sample request:
-        ///
-        ///     PUT api/trainings/00000000-0000-0000-0000-000000000000
-        ///     {
-        ///         "date": "2020-11-11T00:00:00",
-        ///         "exercises": [
-        ///             {
-        ///                 "id":"00000000-0000-0000-0000-000000000000",
-        ///                 "name": "name",
-        ///                 "sets": [
-        ///                     {
-        ///                         "id":"00000000-0000-0000-0000-000000000000"
-        ///                         "weight": 111.1,
-        ///                         "reps": 1
-        ///                     }
-        ///                 ]
-        ///             }
-        ///         ]
-        ///     }
-        ///
-        /// </remarks>
         /// <param name="trainingId">Guid Id</param>
         /// <param name="training"></param>
         /// <returns></returns>
