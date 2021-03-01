@@ -2,6 +2,8 @@
 using GymzzyWebAPI.Models;
 using Microsoft.EntityFrameworkCore;
 using System;
+using System.Collections.Generic;
+using System.Linq;
 using System.Threading.Tasks;
 
 namespace GymzzyWebAPI.DAL.Repositories
@@ -14,7 +16,7 @@ namespace GymzzyWebAPI.DAL.Repositories
             _context = context;
         }
 
-        public async Task<ExerciseDetails> GetByNameAsync(string exerciseName)
+        public async Task<ExerciseDetails> GetByExerciseNameAsync(string exerciseName)
         {
             try
             {
@@ -30,6 +32,13 @@ namespace GymzzyWebAPI.DAL.Repositories
             {
                 throw new InvalidOperationException("More than one Exercises with the same name exists in context.");
             }
+        }
+
+        public async Task<IEnumerable<ExerciseDetails>> GetAllByExerciseNamesAsync(IEnumerable<string> exercisesNames)
+        {
+            return await _context.ExerciseDetails
+                .Where(p => exercisesNames.Contains(p.Name))
+                .ToArrayAsync();
         }
     }
 }

@@ -17,7 +17,7 @@ namespace GymzzyWebAPI.DAL.Repositories
             _context = context;
         }
 
-        public async Task<IEnumerable<Guid>> FindNewPersonalRecordsSetsIdsAsync(Guid userId)
+        public async Task<IEnumerable<Guid>> FindNewPersonalRecordsIdsAsync(Guid userId)
         {
             var allSetsWithMaxReps = await _context.Set
                .Where(p => p.Exercise.Training.UserId == userId)

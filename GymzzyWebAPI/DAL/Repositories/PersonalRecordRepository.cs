@@ -17,10 +17,9 @@ namespace GymzzyWebAPI.DAL.Repositories
             _context = context;
         }
 
-        public async Task<PersonalRecord> GetUserOldRecord(Set set, Guid userId)
+        public async Task<PersonalRecord> GetUserRecordIfBeatenByCurrnetSetAsync(Set set, Guid userId)
         {
             var record = await _context.PersonalRecord
-                .Include(p => p.Set)
                 .SingleOrDefaultAsync(p =>
                     (p.Set.Exercise.Training.UserId == userId) &&
                     (p.Set.Exercise.ExerciseDetailsId == set.Exercise.ExerciseDetailsId) &&
@@ -41,7 +40,7 @@ namespace GymzzyWebAPI.DAL.Repositories
             _context.PersonalRecord.RemoveRange(_context.PersonalRecord.Where(p => p.Set.Exercise.Training.UserId == userId));
         }
 
-        public async Task<IEnumerable<Guid>> CheckRecordsBySetsIdsAsync(IEnumerable<Guid> setsIds)
+        public async Task<IEnumerable<Guid>> CheckIfRecordsBySetsIdsAsync(IEnumerable<Guid> setsIds)
         {
             return await _context.PersonalRecord
                 .Where(p => setsIds.Contains(p.SetId))

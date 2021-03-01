@@ -7,6 +7,6 @@ namespace GymzzyWebAPI.DAL.Repositories.Interfaces
 {
     public interface ISetRepository : IGenericRepository<Set>
     {
-        public Task<IEnumerable<Guid>> FindNewPersonalRecordsSetsIdsAsync(Guid userId);
+        public Task<IEnumerable<Guid>> FindNewPersonalRecordsIdsAsync(Guid userId);
     }
 }

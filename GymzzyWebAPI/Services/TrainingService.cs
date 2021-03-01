@@ -134,14 +134,17 @@ namespace GymzzyWebAPI.Services
 
         private async Task AssignExistingExerciseDetails(IEnumerable<Exercise> exercises)
         {
-            var newExercises = new Dictionary<string, ExerciseDetails>();
+            var exercisesNames = exercises.Select(p => p.ExerciseDetails.Name);
 
+            var savedExerciseDetails = await _unitOfWork.ExerciseDetails.GetAllByExerciseNamesAsync(exercisesNames);
+
+            var newExercises = new Dictionary<string, ExerciseDetails>();
             foreach (var item in exercises)
             {
                 try
                 {
-                    var exercise = await _unitOfWork.ExerciseDetails.GetByNameAsync(item.ExerciseDetails.Name);
-                    if (exercise != null)
+                    var exercise = savedExerciseDetails.SingleOrDefault(p => p.Name == item.ExerciseDetails.Name);
+                    if (exercise != default)
                     {
                         item.ExerciseDetails = exercise;
                         item.ExerciseDetailsId = exercise.Id;
@@ -163,18 +166,18 @@ namespace GymzzyWebAPI.Services
         {
             List<Set> filteredMaxes = new List<Set>();
 
-            foreach (var item in exercises)
+            foreach (var exercise in exercises)
             {
-                filteredMaxes.AddRange(item.Sets.GroupBy(p => p.Weight)
+                filteredMaxes.AddRange(exercise.Sets.GroupBy(p => p.Weight)
                     .SelectMany(p => p.Where(w => w.Reps == p.Max(m => m.Reps)).Take(1)));
             }
 
-            foreach (var item in filteredMaxes)
+            foreach (var set in filteredMaxes)
             {
-                var oldRecord = await _unitOfWork.PersonalRecord.GetUserOldRecord(item, userId);
-                if (oldRecord != default(PersonalRecord))
+                var oldRecordToUpdate = await _unitOfWork.PersonalRecord.GetUserRecordIfBeatenByCurrnetSetAsync(set, userId);
+                if (oldRecordToUpdate != default(PersonalRecord))
                 {
-                    oldRecord.Set = item;
+                    oldRecordToUpdate.Set = set;
                 }
             }
         }
@@ -183,7 +186,7 @@ namespace GymzzyWebAPI.Services
         {
             await _unitOfWork.SaveChangesAsync();
 
-            var newPersonalRecordsSets = await _unitOfWork.Set.FindNewPersonalRecordsSetsIdsAsync(userId);
+            var newPersonalRecordsSets = await _unitOfWork.Set.FindNewPersonalRecordsIdsAsync(userId);
 
             var newPersonalRecords = new List<PersonalRecord>(newPersonalRecordsSets.Count());
 
@@ -201,13 +204,13 @@ namespace GymzzyWebAPI.Services
         {
             var setsIds = trainingViewDTO.Exercises.SelectMany(p => p.Sets.Select(s => s.Id));
 
-            var checkedRecords = await _unitOfWork.PersonalRecord.CheckRecordsBySetsIdsAsync(setsIds);
+            var checkedRecordsIds = await _unitOfWork.PersonalRecord.CheckIfRecordsBySetsIdsAsync(setsIds);
 
-            var toMark = trainingViewDTO.Exercises.SelectMany(p => p.Sets.Where(s => checkedRecords.Contains(s.Id)));
+            var DTOSetsToMark = trainingViewDTO.Exercises.SelectMany(p => p.Sets.Where(s => checkedRecordsIds.Contains(s.Id)));
 
-            foreach (var item in toMark)
+            foreach (var set in DTOSetsToMark)
             {
-                item.Record = true;
+                set.Record = true;
             }
 
             return trainingViewDTO;
