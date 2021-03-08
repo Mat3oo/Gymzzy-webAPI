@@ -17,8 +17,9 @@ namespace GymzzyWebAPI.DAL.Repositories
 
         public async Task<Training> GetWithDetailsAsync(Guid id)
         {
-            return await _context.Training.Include(p => p.Series)
-                .ThenInclude(p => p.Exercise)
+            return await _context.Training
+                .Include(p => p.Exercises).ThenInclude(p => p.Sets)
+                .Include(p => p.Exercises).ThenInclude(p => p.ExerciseDetails)
                 .SingleOrDefaultAsync(p => p.Id == id);
         }
     }

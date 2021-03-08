@@ -61,20 +61,6 @@ namespace GymzzyWebAPI.Controllers
         /// <summary>
         /// Update user details.
         /// </summary>
-        /// <remarks>
-        /// Sample request:
-        ///
-        ///     PUT api/user
-        ///     {
-        ///         "name":"name",
-        ///         "lastName":"lastname",
-        ///         "userName":"username",
-        ///         "gender":"f",
-        ///         "height":190,
-        ///         "weight":90,
-        ///         "birthday":"2020-11-11T00:00:00"
-        ///     }
-        /// </remarks>
         /// <param name="userDetails"></param>
         /// <returns></returns>
         /// <response code="400">If the authenticated user id from token is invalid format.</response>
@@ -123,16 +109,6 @@ namespace GymzzyWebAPI.Controllers
         /// <summary>
         /// Register user in the system.
         /// </summary>
-        /// <remarks>
-        /// Sample request:
-        ///
-        ///     POST api/user/regist
-        ///     {
-        ///         "email":"user@example.com",
-        ///         "userName":"username",
-        ///         "password":"password"
-        ///     }
-        /// </remarks>
         /// <param name="userDTO"></param>
         /// <returns>Details of registered user.</returns>
         /// <response code="422">If the model is fine formed, but problems with values.</response>
@@ -161,15 +137,6 @@ namespace GymzzyWebAPI.Controllers
         /// <summary>
         /// Generate user bearer token.
         /// </summary>
-        /// <remarks>
-        /// Sample request:
-        ///
-        ///     POST api/user/login
-        ///     {
-        ///         "email":"user@example.com",
-        ///         "password":"password"
-        ///     }
-        /// </remarks>
         /// <param name="userDTO"></param>
         /// <returns>Generated JWT user token.</returns>
         /// <response code="401">If user email or password is invalid.</response>

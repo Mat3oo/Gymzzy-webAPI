@@ -1,21 +1,18 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.ComponentModel.DataAnnotations;
 
 namespace GymzzyWebAPI.Models
 {
     public class Exercise
     {
-        public Exercise()
-        {
-            Series = new HashSet<Series>();
-        }
-
         public Guid Id { get; set; }
-        [Required]
-        public string Name { get; set; }
-        public string Description { get; set; }
 
-        public ICollection<Series> Series { get; set; }
+        public Guid TrainingId { get; set; }
+        public Training Training { get; set; }
+
+        public Guid? ExerciseDetailsId { get; set; }
+        public ExerciseDetails ExerciseDetails { get; set; }
+
+        public ICollection<Set> Sets { get; set; } = new HashSet<Set>();
     }
 }

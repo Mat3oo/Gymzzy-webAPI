@@ -8,29 +8,29 @@ using System.Threading.Tasks;
 
 namespace GymzzyWebAPI.DAL.Repositories
 {
-    public class SeriesRepository : GenericRepository<Series, WorkoutContext>, ISeriesRepository
+    public class SetRepository : GenericRepository<Set, WorkoutContext>, ISetRepository
     {
         private readonly WorkoutContext _context;
 
-        public SeriesRepository(WorkoutContext context) : base(context)
+        public SetRepository(WorkoutContext context) : base(context)
         {
             _context = context;
         }
 
-        public async Task<IEnumerable<Guid>> GetNewPersonalRecordsSeriesIdsAsync(Guid userId)
+        public async Task<IEnumerable<Guid>> FindNewPersonalRecordsIdsAsync(Guid userId)
         {
-            var allSeriesWithMaxReps = await _context.Series
-               .Where(p => p.Training.UserId == userId)
-               .OrderBy(p => p.Training.Date)
+            var allSetsWithMaxReps = await _context.Set
+               .Where(p => p.Exercise.Training.UserId == userId)
+               .OrderBy(p => p.Exercise.Training.Date)
                .GroupBy(p => new { p.ExerciseId, p.Weight })
                .Select(p => new { p.Key, Reps = p.Max(m => m.Reps) })
-               .Join(_context.Series,
+               .Join(_context.Set,
                     grouped => new { grouped.Key.ExerciseId, grouped.Key.Weight, grouped.Reps },
-                    dbSeries => new { dbSeries.ExerciseId, dbSeries.Weight, dbSeries.Reps },
-                    (grouped, dbseries) => new Series { Id = dbseries.Id, Weight = dbseries.Weight, Reps = dbseries.Reps })
+                    dbSet => new { dbSet.ExerciseId, dbSet.Weight, dbSet.Reps },
+                    (grouped, dbSets) => new Set { Id = dbSets.Id, Weight = dbSets.Weight, Reps = dbSets.Reps })
                .ToArrayAsync();
 
-            return allSeriesWithMaxReps.GroupBy(p => new { p.ExerciseId, p.Weight })
+            return allSetsWithMaxReps.GroupBy(p => new { p.ExerciseId, p.Weight })
                 .SelectMany(p => p.Where(w => w.Reps == p.Max(m => m.Reps)).Take(1))
                 .Select(p => p.Id)
                 .ToArray();

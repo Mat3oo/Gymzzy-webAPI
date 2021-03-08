@@ -17,14 +17,13 @@ namespace GymzzyWebAPI.DAL.Repositories
             _context = context;
         }
 
-        public async Task<PersonalRecord> GetUserOldRecord(Series series, Guid userId)
+        public async Task<PersonalRecord> GetUserRecordIfBeatenByCurrnetSetAsync(Set set, Guid userId)
         {
             var record = await _context.PersonalRecord
-                .Include(p => p.Series)
                 .SingleOrDefaultAsync(p =>
-                    (p.Series.Training.UserId == userId) &&
-                    (p.Series.ExerciseId == series.ExerciseId) &&
-                    (p.Series.Weight == series.Weight));
+                    (p.Set.Exercise.Training.UserId == userId) &&
+                    (p.Set.Exercise.ExerciseDetailsId == set.Exercise.ExerciseDetailsId) &&
+                    (p.Set.Weight == set.Weight));
 
             if (record is default(PersonalRecord))
             {
@@ -32,20 +31,20 @@ namespace GymzzyWebAPI.DAL.Repositories
             }
             else
             {
-                return (record.Series.Reps < series.Reps) ? record : default(PersonalRecord);
+                return (record.Set.Reps < set.Reps) ? record : default;
             }
         }
 
         public void DeleteAllUserRecords(Guid userId)
         {
-            _context.PersonalRecord.RemoveRange(_context.PersonalRecord.Where(p=>p.Series.Training.UserId == userId));
+            _context.PersonalRecord.RemoveRange(_context.PersonalRecord.Where(p => p.Set.Exercise.Training.UserId == userId));
         }
 
-        public async Task<IEnumerable<Guid>> CheckRecordsBySeriesIdsAsync(IEnumerable<Guid> seriesIds)
+        public async Task<IEnumerable<Guid>> CheckIfRecordsBySetsIdsAsync(IEnumerable<Guid> setsIds)
         {
             return await _context.PersonalRecord
-                .Where(p => seriesIds.Contains(p.SeriesId))
-                .Select(p => p.SeriesId)
+                .Where(p => setsIds.Contains(p.SetId))
+                .Select(p => p.SetId)
                 .ToArrayAsync();
         }
     }
